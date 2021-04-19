@@ -64,20 +64,24 @@ std::string Zegar::toString(){
 	std::string minuta_string = std::to_string(minuta);
 	std::string sekundaa_string = std::to_string(sekunda);
 	
-	if(godzina == 24){
+	if(godzina == 24)
 		godzina = 0;
-		godzina_string = "00";
-	}
-	if(minuta == 60){
-		minuta = 0;
-		minuta_string = "00";
-	}
-	if(sekunda == 60){
-		minuta = 0;
-		sekundaa_string = "00";
-	}
 	
-	return "Jest godzina: " + godzina_string + ":" + minuta_string + ":" + sekundaa_string + "\n";
+	if(minuta == 60)
+		minuta = 0;
+	
+	if(sekunda == 60)
+		minuta = 0;
+
+	
+	if(godzina < 10)
+		godzina_string = "0" + std::to_string(godzina);
+	if(minuta < 10)
+		minuta_string = "0" + std::to_string(minuta);
+	if(sekunda < 10)
+		sekundaa_string = "0" + std::to_string(sekunda);
+		
+	return godzina_string + ":" + minuta_string + ":" + sekundaa_string + "\n";
 }
 void Zegar::next_hour(){
 		godzina++;
