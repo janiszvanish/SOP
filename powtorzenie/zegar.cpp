@@ -1,8 +1,7 @@
 #include <iostream>
-#include <stdio.h>
-#include <cstdlib>
 #include <string>
-
+#include <sstream>
+#include <iomanip>
 
 struct Zegar{
 	int godzina;
@@ -26,63 +25,44 @@ auto main() -> int{
 	
 	auto zegar = Zegar(23, 59, 59);
 	std::cout<<zegar.toString();
-	zegar.next_hour();
-	zegar.next_minute();
+	std::cout<<"\n";
+	//zegar.next_hour();
+	//zegar.next_minute();
 	zegar.next_second();
 	
 	std::cout<<zegar.toString();
+	std::cout<<"\n";
 	
 	return 0;
 }
 
 std::string Zegar::toString(){
-	std::string godzina_string = std::to_string(godzina);
-	std::string minuta_string = std::to_string(minuta);
-	std::string sekundaa_string = std::to_string(sekunda);
+	std::ostringstream out;
+	out << std::setw(2) << std::setfill('0') << godzina << ":";
+	out << std::setw(2) << std::setfill('0') << minuta << ":";
+	out << std::setw(2) << std::setfill('0') << sekunda;
 	
-	if(godzina == 24)
-		godzina = 0;
+	return out.str();
 	
-	if(minuta == 60)
-		minuta = 0;
-	
-	if(sekunda == 60)
-		minuta = 0;
-
-	
-	if(godzina < 10)
-		godzina_string = "0" + std::to_string(godzina);
-	if(minuta < 10)
-		minuta_string = "0" + std::to_string(minuta);
-	if(sekunda < 10)
-		sekundaa_string = "0" + std::to_string(sekunda);
-		
-	return godzina_string + ":" + minuta_string + ":" + sekundaa_string + "\n";
 }
 void Zegar::next_hour(){
 		godzina++;
-		if(godzina == 24)
-			std::cout<<"Nastepna godzina to 0\n";
-		else if(godzina > 24)
-			std::cout<<"Nastepna godzina to 1\n";
-		else
-			std::cout<<"Nastepna godzina to " + godzina;
+		if(godzina == 24){
+			godzina = 0;
+		}
 }
 void Zegar::next_minute(){
 	minuta++;
-	if(minuta == 60)
-			std::cout<<"Nastepna minuta to 0\n";
-		else if(minuta > 60)
-			std::cout<<"Nastepna godzina to 1\n";
-		else
-			std::cout<<"Nastepna godzina to " + minuta;
+	if(minuta == 60){
+			minuta = 0;
+			next_hour();
+	}
 }
 void Zegar::next_second(){
 	sekunda++;
-	if(sekunda == 60)
-			std::cout<<"Nastepna sekunda to 0\n";
-		else if(sekunda > 60)
-			std::cout<<"Nastepna sekunda to 1\n";
-		else
-			std::cout<<"Nastepna sekunda to " + sekunda;
+	if(sekunda == 60){
+		sekunda = 0;
+		next_minute();
+	}
+			
 }
