@@ -7,9 +7,15 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+pid_t cpid;
+
+void handler(int signal){
+	kill(cpid, signal);
+}
+	
 auto main(int argc, char *argv[]) -> int {
 
-  auto cpid = fork();
+  cpid = fork();
   if (cpid == -1) {
     perror("fork");
     exit(EXIT_FAILURE);
@@ -20,7 +26,13 @@ auto main(int argc, char *argv[]) -> int {
     exit(EXIT_FAILURE);
   }
   signal(SIGINT, SIG_IGN);
-
+	
+	
+	struct sigaction act{};
+	act.sa_handler = handler;
+	
+	sigaction(SIGTERM, &act, nullptr);
+		
   int status = 0;
   waitpid(cpid, &status, 0);
   if (WIFEXITED(status)) {
@@ -29,7 +41,7 @@ auto main(int argc, char *argv[]) -> int {
   }
 
   if (WIFSIGNALED(status)) {
-    std::cout << "\nProcess: " << cpid << " killed by signal"
+    std::cout << "\nProcess: " << cpid << " killed by signal: "
               << WTERMSIG(status) << "\n"
               << strsignal(WTERMSIG(status)) << "\n";
   }
